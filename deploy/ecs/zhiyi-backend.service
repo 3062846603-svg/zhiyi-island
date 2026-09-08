@@ -1,0 +1,27 @@
+[Unit]
+Description=Zhiyi Island backend
+After=network-online.target postgresql-16.service zhiyi-redis.service zhiyi-minio.service
+Wants=network-online.target
+Requires=postgresql-16.service zhiyi-redis.service zhiyi-minio.service
+[Service]
+Type=simple
+User=zhiyi
+Group=zhiyi
+WorkingDirectory=/opt/zhiyi-island/state
+EnvironmentFile=/etc/zhiyi-island/infra.env
+EnvironmentFile=/etc/zhiyi-island/ai-mail.env
+Environment=SPRING_PROFILES_ACTIVE=cloud
+Environment=SPRING_CONFIG_ADDITIONAL_LOCATION=file:/etc/zhiyi-island/
+ExecStart=/usr/bin/java -Xms128m -Xmx384m -XX:MaxMetaspaceSize=160m -XX:MaxDirectMemorySize=64m -Xss512k -XX:+UseSerialGC -XX:+ExitOnOutOfMemoryError -jar /opt/zhiyi-island/backend/app.jar
+Restart=on-failure
+RestartSec=10
+MemoryHigh=650M
+MemoryMax=768M
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/zhiyi-island/state
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知忆岛功能模块图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            font-weight: normal;
+        }
+
+        .diagram-container {
+            border: 2px solid #000;
+            padding: 30px;
+            background: #fff;
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            transform-origin: top left;
+        }
+
+        .mermaid svg {
+            max-width: none !important;
+            width: auto !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>知忆岛功能模块图</h1>
+        
+        <div class="diagram-container">
+            <pre class="mermaid">
+flowchart LR
+    Core[知忆岛系统]
+    
+    Core --> User[用户管理模块]
+    Core --> Note[笔记管理模块]
+    Core --> Knowledge[知识库管理模块]
+    Core --> AI[AI服务模块]
+    Core --> Search[搜索模块]
+    Core --> File[文件管理模块]
+    Core --> Notify[通知模块]
+    Core --> Data[数据传输模块]
+    
+    User --> U1[用户注册]
+    User --> U2[用户登录]
+    User --> U3[个人信息管理]
+    User --> U4[密码管理]
+    User --> U5[邮箱验证]
+    
+    Note --> N1[创建笔记]
+    Note --> N2[编辑笔记]
+    Note --> N3[删除笔记]
+    Note --> N4[笔记分类]
+    Note --> N5[草稿管理]
+    
+    Knowledge --> K1[创建知识库]
+    Knowledge --> K2[编辑知识库]
+    Knowledge --> K3[删除知识库]
+    Knowledge --> K4[知识条目管理]
+    Knowledge --> K5[知识分类]
+    
+    AI --> A1[摘要生成]
+    AI --> A2[智能对话]
+    AI --> A3[知识图谱]
+    AI --> A4[关键词提取]
+    
+    Search --> S1[笔记搜索]
+    Search --> S2[知识库搜索]
+    Search --> S3[搜索历史]
+    
+    File --> F1[文件上传]
+    File --> F2[文件下载]
+    File --> F3[图片管理]
+    
+    Notify --> T1[消息通知]
+    Notify --> T2[已读标记]
+    Notify --> T3[通知类型]
+    
+    Data --> D1[数据导出]
+    Data --> D2[数据导入]
+    Data --> D3[格式转换]
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis',
+                nodeSpacing: 80,
+                rankSpacing: 80,
+                padding: 15
+            },
+            themeVariables: {
+                fontSize: '18px',
+                primaryTextColor: '#333',
+                lineColor: '#000',
+                secondaryColor: '#fff',
+                tertiaryColor: '#f0f0f0',
+                edgeLabelBackground: '#fff'
+            }
+        });
+    </script>
+</body>
+</html>

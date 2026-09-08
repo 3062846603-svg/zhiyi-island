@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.zhiyiislandbackend.mapper.SearchHistoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.zhiyiislandbackend.model.entity.SearchHistory">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="keyword" property="keyword"/>
+        <result column="search_type" property="searchType"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_id, keyword, search_type, create_time
+    </sql>
+
+    <insert id="insert" parameterType="com.example.zhiyiislandbackend.model.entity.SearchHistory">
+        INSERT INTO search_history (user_id, keyword, search_type, create_time)
+        VALUES (#{userId}, #{keyword}, #{searchType}, #{createTime})
+    </insert>
+
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM search_history
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectByUserIdAndType" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM search_history
+        WHERE user_id = #{userId} AND search_type = #{searchType}
+        ORDER BY create_time DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM search_history
+        WHERE id = #{id}
+    </select>
+
+    <delete id="deleteByUserId">
+        DELETE FROM search_history WHERE user_id = #{userId}
+    </delete>
+
+    <delete id="deleteById">
+        DELETE FROM search_history WHERE id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,723 @@
+@startuml 知忆岛系统类图
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+
+' ==================== 实体类 ====================
+
+package "实体层 (Entity)" <<Rectangle>> {
+    
+    class User {
+        - Long id
+        - String username
+        - String password
+        - String email
+        - String nickname
+        - String avatar
+        - String phone
+        - String bio
+        - String location
+        - String website
+        - UserStatus status
+        - LocalDateTime createTime
+        - LocalDateTime updateTime
+    }
+    
+    class Note {
+        - Long id
+        - Long userId
+        - String title
+        - String bookName
+        - String chapter
+        - String content
+        - String category
+        - String tags
+        - BooleanEnum isStar
+        - LocalDateTime createTime
+        - LocalDateTime updateTime
+    }
+    
+    class Knowledge {
+        - Long id
+        - Long userId
+        - String title
+        - String description
+        - String category
+        - Integer itemCount
+        - LocalDateTime createTime
+        - LocalDateTime updateTime
+    }
+    
+    class KnowledgeItem {
+        - Long id
+        - Long knowledgeId
+        - String title
+        - String content
+        - String source
+        - LocalDateTime createTime
+        - LocalDateTime updateTime
+    }
+    
+    class AiSummary {
+        - Long id
+        - Long userId
+        - String title
+        - String originalContent
+        - String summaryContent
+        - String summaryStyle
+        - String summaryLength
+        - Integer wordCount
+        - LocalDateTime createTime
+    }
+    
+    class Notification {
+        - Long id
+        - Long userId
+        - String title
+        - String content
+        - NotificationType type
+        - BooleanEnum isRead
+        - LocalDateTime createTime
+    }
+    
+    class ImportRecord {
+        - Long id
+        - Long userId
+        - String fileName
+        - String fileType
+        - Long fileSize
+        - ImportStatus status
+        - Integer noteCount
+        - Integer knowledgeCount
+        - String errorMessage
+        - LocalDateTime createTime
+    }
+    
+    class ExportRecord {
+        - Long id
+        - Long userId
+        - String fileName
+        - String format
+        - Long fileSize
+        - String dataTypes
+        - LocalDateTime createTime
+    }
+    
+    class SearchHistory {
+        - Long id
+        - Long userId
+        - String keyword
+        - Integer resultCount
+        - LocalDateTime createTime
+    }
+    
+    class UserSettings {
+        - Long id
+        - Long userId
+        - String theme
+        - String accentColor
+        - String fontSize
+        - Boolean noteReminder
+        - Boolean aiSummaryComplete
+        - Boolean knowledgeUpdate
+        - Boolean systemNotice
+        - LocalDateTime createTime
+        - LocalDateTime updateTime
+    }
+}
+
+' ==================== 枚举类 ====================
+
+package "枚举层 (Enum)" <<Rectangle>> {
+    
+    enum UserStatus {
+        ACTIVE
+        INACTIVE
+        BANNED
+    }
+    
+    enum BooleanEnum {
+        TRUE
+        FALSE
+    }
+    
+    enum NotificationType {
+        SYSTEM
+        NOTE
+        AI
+        KNOWLEDGE
+    }
+    
+    enum ImportStatus {
+        PROCESSING
+        SUCCESS
+        FAILED
+    }
+}
+
+' ==================== DTO类 ====================
+
+package "数据传输对象 (DTO)" <<Rectangle>> {
+    
+    package "请求DTO" {
+        class LoginRequest {
+            - String username
+            - String password
+        }
+        
+        class RegisterRequest {
+            - String username
+            - String email
+            - String password
+            - String code
+        }
+        
+        class NoteRequest {
+            - String title
+            - String bookName
+            - String chapter
+            - String content
+            - String category
+            - String tags
+        }
+        
+        class KnowledgeRequest {
+            - String title
+            - String description
+            - String category
+        }
+        
+        class KnowledgeItemRequest {
+            - String title
+            - String content
+            - String source
+        }
+        
+        class SummaryRequest {
+            - String content
+            - String style
+            - String length
+        }
+        
+        class ImportRequest {
+            - Boolean autoExtract
+            - Boolean aiSummary
+            - Boolean autoCategory
+            - Boolean extractImages
+        }
+        
+        class ExportRequest {
+            - List<String> dataTypes
+            - String format
+        }
+    }
+    
+    package "响应DTO" {
+        class LoginResponse {
+            - Long userId
+            - String username
+            - String nickname
+            - String avatar
+            - String token
+        }
+        
+        class UserInfoResponse {
+            - Long id
+            - String username
+            - String email
+            - String nickname
+            - String avatar
+            - String phone
+            - String bio
+            - String location
+            - String website
+            - String createTime
+        }
+        
+        class NoteResponse {
+            - Long id
+            - String title
+            - String bookName
+            - String chapter
+            - String content
+            - String category
+            - List<String> tags
+            - Boolean isStar
+            - String createTime
+        }
+        
+        class KnowledgeResponse {
+            - Long id
+            - String title
+            - String description
+            - String category
+            - Integer itemCount
+            - String createTime
+            - List<KnowledgeItemResponse> items
+        }
+        
+        class SummaryResponse {
+            - Long id
+            - String title
+            - String summaryContent
+            - String summaryStyle
+            - Integer wordCount
+            - String createTime
+        }
+        
+        class NotificationResponse {
+            - Long id
+            - String title
+            - String content
+            - String type
+            - Boolean read
+            - String createTime
+        }
+        
+        class SearchResultResponse {
+            - Long id
+            - String title
+            - String content
+            - String source
+            - String type
+        }
+    }
+}
+
+' ==================== 服务接口 ====================
+
+package "服务层 (Service)" <<Rectangle>> {
+    
+    interface UserService {
+        + register(RegisterRequest) : void
+        + login(LoginRequest) : LoginResponse
+        + getUserById(Long) : User
+        + getUserInfoById(Long) : UserInfoResponse
+        + updatePassword(Long, String, String) : void
+        + updateUserInfo(Long, UpdateProfileRequest) : void
+        + updateEmail(Long, String, String) : void
+        + deleteAccount(Long) : void
+        + resetPassword(String, String, String) : void
+    }
+    
+    interface NoteService {
+        + create(Long, NoteRequest) : Note
+        + update(Long, NoteRequest) : Note
+        + delete(Long, Long) : void
+        + getById(Long) : Note
+        + getByUserId(Long) : List<Note>
+        + getByUserIdAndCategory(Long, String) : List<Note>
+        + search(Long, String) : List<Note>
+        + toggleStar(Long, Long) : void
+        + countByUserId(Long) : int
+    }
+    
+    interface KnowledgeService {
+        + create(Long, KnowledgeRequest) : Knowledge
+        + update(Long, KnowledgeRequest) : Knowledge
+        + delete(Long, Long) : void
+        + getById(Long) : Knowledge
+        + getByUserId(Long) : List<Knowledge>
+        + createItem(Long, Long, KnowledgeItemRequest) : KnowledgeItem
+        + updateItem(Long, Long, KnowledgeItemRequest) : KnowledgeItem
+        + deleteItem(Long, Long) : void
+        + getItemsByKnowledgeId(Long) : List<KnowledgeItem>
+        + countByUserId(Long) : int
+    }
+    
+    interface AiService {
+        + generateSummary(Long, SummaryRequest) : SummaryResponse
+        + getSummaryHistory(Long, Integer) : List<SummaryResponse>
+        + deleteSummary(Long, Long) : void
+        + saveToNote(Long, Long) : void
+        + extractKeywords(String) : String
+        + generateKnowledgeGraph(Long) : String
+    }
+    
+    interface NotificationService {
+        + createNotification(Long, String, String, NotificationType) : void
+        + getNotifications(Long, Integer) : List<NotificationResponse>
+        + getUnreadCount(Long) : int
+        + markAsRead(Long, Long) : void
+        + markAllAsRead(Long) : void
+        + deleteNotification(Long, Long) : void
+    }
+    
+    interface SearchHistoryService {
+        + record(Long, String, Integer) : void
+        + getRecent(Long, int) : List<SearchHistory>
+        + clear(Long) : void
+    }
+    
+    interface ImportService {
+        + importFile(Long, MultipartFile, ImportRequest) : ImportRecordResponse
+        + getImportHistory(Long) : List<ImportRecordResponse>
+        + deleteImportRecord(Long, Long) : void
+    }
+    
+    interface ExportService {
+        + exportData(Long, ExportRequest) : ExportDataResponse
+        + getExportHistory(Long) : List<ExportRecordResponse>
+    }
+    
+    interface TokenService {
+        + saveToken(String, Long) : void
+        + invalidateToken(String) : void
+        + isTokenValid(String) : boolean
+        + getUserIdFromToken(String) : Long
+        + invalidateAllTokensByUserId(Long) : void
+    }
+    
+    interface CodeService {
+        + sendCode(String) : void
+        + verifyCode(String, String) : boolean
+    }
+    
+    interface FileService {
+        + uploadAvatar(Long, MultipartFile) : String
+    }
+    
+    interface StorageService {
+        + getStorageInfo(Long) : StorageInfoResponse
+    }
+}
+
+' ==================== 服务实现类 ====================
+
+package "服务实现层 (Service Implementation)" <<Rectangle>> {
+    
+    class UserServiceImpl {
+        - UserMapper userMapper
+        - JwtUtil jwtUtil
+        - PasswordEncoder passwordEncoder
+        - CodeService codeService
+        - NotificationService notificationService
+    }
+    
+    class NoteServiceImpl {
+        - NoteMapper noteMapper
+        - NotificationService notificationService
+    }
+    
+    class KnowledgeServiceImpl {
+        - KnowledgeMapper knowledgeMapper
+        - KnowledgeItemMapper knowledgeItemMapper
+        - NotificationService notificationService
+    }
+    
+    class AiServiceImpl {
+        - AiSummaryMapper aiSummaryMapper
+        - NoteMapper noteMapper
+        - ChatModel chatModel
+        - NotificationService notificationService
+    }
+    
+    class NotificationServiceImpl {
+        - NotificationMapper notificationMapper
+    }
+    
+    class TokenServiceImpl {
+        - RedisTemplate<String, Object> redisTemplate
+        - JwtUtil jwtUtil
+    }
+    
+    class ImportServiceImpl {
+        - ImportRecordMapper importRecordMapper
+        - NoteMapper noteMapper
+        - KnowledgeMapper knowledgeMapper
+        - NotificationService notificationService
+    }
+    
+    class ExportServiceImpl {
+        - ExportRecordMapper exportRecordMapper
+        - NoteMapper noteMapper
+        - KnowledgeMapper knowledgeMapper
+        - AiSummaryMapper aiSummaryMapper
+    }
+}
+
+' ==================== 控制器类 ====================
+
+package "控制器层 (Controller)" <<Rectangle>> {
+    
+    class UserController {
+        - UserService userService
+        - FileService fileService
+        - JwtUtil jwtUtil
+        - TokenService tokenService
+        - CodeService codeService
+        + register(RegisterRequest) : Result<Void>
+        + login(LoginRequest) : Result<LoginResponse>
+        + logout(HttpServletRequest) : Result<Void>
+        + getUserInfo(HttpServletRequest) : Result<UserInfoResponse>
+        + updatePassword(HttpServletRequest, ChangePasswordRequest) : Result<Void>
+        + updateUserInfo(HttpServletRequest, UpdateProfileRequest) : Result<Void>
+        + updateEmail(HttpServletRequest, UpdateEmailRequest) : Result<Void>
+        + sendEmailCode(SendCodeRequest) : Result<Void>
+        + resetPassword(ResetPasswordRequest) : Result<Void>
+        + uploadAvatar(HttpServletRequest, MultipartFile) : Result<String>
+        + deleteAccount(HttpServletRequest) : Result<Void>
+    }
+    
+    class NoteController {
+        - NoteService noteService
+        + create(NoteRequest) : Result<NoteResponse>
+        + update(Long, NoteRequest) : Result<NoteResponse>
+        + delete(Long) : Result<Void>
+        + getById(Long) : Result<NoteResponse>
+        + list(String) : Result<List<NoteResponse>>
+        + search(String) : Result<List<NoteResponse>>
+        + toggleStar(Long) : Result<Void>
+        + count() : Result<Integer>
+    }
+    
+    class KnowledgeController {
+        - KnowledgeService knowledgeService
+        + create(KnowledgeRequest) : Result<KnowledgeResponse>
+        + update(Long, KnowledgeRequest) : Result<KnowledgeResponse>
+        + delete(Long) : Result<Void>
+        + getById(Long) : Result<KnowledgeResponse>
+        + list(String) : Result<List<KnowledgeResponse>>
+        + count() : Result<Integer>
+        + createItem(Long, KnowledgeItemRequest) : Result<KnowledgeItemResponse>
+        + updateItem(Long, KnowledgeItemRequest) : Result<KnowledgeItemResponse>
+        + deleteItem(Long) : Result<Void>
+        + getItems(Long) : Result<List<KnowledgeItemResponse>>
+    }
+    
+    class AiController {
+        - AiService aiService
+        + generateSummary(SummaryRequest) : Result<SummaryResponse>
+        + getSummaryHistory(Integer) : Result<List<SummaryResponse>>
+        + deleteSummary(Long) : Result<Void>
+        + saveToNote(Long) : Result<Void>
+        + extractKeywords(String) : Result<String>
+        + generateKnowledgeGraph() : Result<String>
+    }
+    
+    class SearchController {
+        - SearchHistoryService searchHistoryService
+        - NoteService noteService
+        - KnowledgeService knowledgeService
+        + search(String, String) : Result<List<SearchResultResponse>>
+        + aiSearch(Map) : Result<List<SearchResultResponse>>
+        + getHistory(int) : Result<List<SearchHistoryResponse>>
+        + clearHistory() : Result<Void>
+    }
+    
+    class ImportController {
+        - ImportService importService
+        + importFile(MultipartFile, Boolean, Boolean, Boolean, Boolean) : Result<ImportRecordResponse>
+        + getImportHistory() : Result<List<ImportRecordResponse>>
+        + deleteImportRecord(Long) : Result<Void>
+    }
+    
+    class ExportController {
+        - ExportService exportService
+        + exportData(ExportRequest) : ResponseEntity<byte[]>
+        + getExportHistory() : Result<List<ExportRecordResponse>>
+    }
+    
+    class NotificationController {
+        - NotificationService notificationService
+        - JwtUtil jwtUtil
+        + getNotifications(Integer) : Result<List<NotificationResponse>>
+        + getUnreadCount() : Result<Map<String, Integer>>
+        + markAsRead(Long) : Result<Void>
+        + markAllAsRead() : Result<Void>
+        + deleteNotification(Long) : Result<Void>
+    }
+}
+
+' ==================== Mapper接口 ====================
+
+package "数据访问层 (Mapper)" <<Rectangle>> {
+    
+    interface UserMapper {
+        + insert(User) : int
+        + update(User) : int
+        + selectById(Long) : User
+        + selectByUsername(String) : User
+        + selectByEmail(String) : User
+        + deleteById(Long) : int
+    }
+    
+    interface NoteMapper {
+        + insert(Note) : int
+        + update(Note) : int
+        + selectById(Long) : Note
+        + selectByUserId(Long) : List<Note>
+        + selectByUserIdAndCategory(Long, String) : List<Note>
+        + search(Long, String) : List<Note>
+        + deleteById(Long) : int
+        + countByUserId(Long) : int
+    }
+    
+    interface KnowledgeMapper {
+        + insert(Knowledge) : int
+        + update(Knowledge) : int
+        + selectById(Long) : Knowledge
+        + selectByUserId(Long) : List<Knowledge>
+        + deleteById(Long) : int
+        + countByUserId(Long) : int
+        + updateItemCount(Long, int) : int
+    }
+    
+    interface KnowledgeItemMapper {
+        + insert(KnowledgeItem) : int
+        + update(KnowledgeItem) : int
+        + selectById(Long) : KnowledgeItem
+        + selectByKnowledgeId(Long) : List<KnowledgeItem>
+        + deleteById(Long) : int
+    }
+    
+    interface AiSummaryMapper {
+        + insert(AiSummary) : int
+        + selectById(Long) : AiSummary
+        + selectByUserId(Long, Integer) : List<AiSummary>
+        + deleteById(Long) : int
+    }
+    
+    interface NotificationMapper {
+        + insert(Notification) : int
+        + selectByUserId(Long, Integer) : List<Notification>
+        + countUnread(Long) : int
+        + updateReadStatus(Long, Boolean) : int
+        + deleteById(Long) : int
+    }
+    
+    interface ImportRecordMapper {
+        + insert(ImportRecord) : int
+        + updateStatus(Long, Integer, Integer, Integer, String) : int
+        + selectByUserId(Long) : List<ImportRecord>
+        + selectById(Long) : ImportRecord
+        + deleteById(Long) : int
+    }
+    
+    interface ExportRecordMapper {
+        + insert(ExportRecord) : int
+        + selectByUserId(Long) : List<ExportRecord>
+    }
+    
+    interface SearchHistoryMapper {
+        + insert(SearchHistory) : int
+        + selectByUserId(Long, int) : List<SearchHistory>
+        + deleteByUserId(Long) : int
+    }
+}
+
+' ==================== 工具类 ====================
+
+package "工具层 (Util)" <<Rectangle>> {
+    
+    class JwtUtil {
+        - String secret
+        - Long expiration
+        + generateToken(Long, String) : String
+        + parseToken(String) : Claims
+        + getUsernameFromToken(String) : String
+        + getUserIdFromToken(String) : Long
+        + validateToken(String) : boolean
+    }
+    
+    class SecurityUtil {
+        + getRequiredUserId() : Long
+        + getCurrentUserId() : Optional<Long>
+        + isAuthenticated() : boolean
+    }
+}
+
+' ==================== 公共类 ====================
+
+package "公共层 (Common)" <<Rectangle>> {
+    
+    class Result<T> {
+        - Integer code
+        - String message
+        - T data
+        + success() : Result<T>
+        + success(T) : Result<T>
+        + success(String, T) : Result<T>
+        + error(String) : Result<T>
+        + error(Integer, String) : Result<T>
+    }
+}
+
+' ==================== 异常类 ====================
+
+package "异常层 (Exception)" <<Rectangle>> {
+    
+    class BusinessException {
+        - Integer code
+        - String message
+    }
+    
+    class GlobalExceptionHandler {
+        + handleBusinessException(BusinessException) : Result<Void>
+        + handleValidationException(MethodArgumentNotValidException) : Result<Void>
+        + handleException(Exception) : Result<Void>
+    }
+}
+
+' ==================== 关系定义 ====================
+
+' 实体与枚举关系
+User --> UserStatus
+Note --> BooleanEnum
+Notification --> NotificationType
+Notification --> BooleanEnum
+ImportRecord --> ImportStatus
+
+' 服务实现与接口关系
+UserServiceImpl ..|> UserService
+NoteServiceImpl ..|> NoteService
+KnowledgeServiceImpl ..|> KnowledgeService
+AiServiceImpl ..|> AiService
+NotificationServiceImpl ..|> NotificationService
+TokenServiceImpl ..|> TokenService
+ImportServiceImpl ..|> ImportService
+ExportServiceImpl ..|> ExportService
+
+' 服务实现与Mapper关系
+UserServiceImpl --> UserMapper
+NoteServiceImpl --> NoteMapper
+KnowledgeServiceImpl --> KnowledgeMapper
+KnowledgeServiceImpl --> KnowledgeItemMapper
+AiServiceImpl --> AiSummaryMapper
+NotificationServiceImpl --> NotificationMapper
+ImportServiceImpl --> ImportRecordMapper
+ExportServiceImpl --> ExportRecordMapper
+
+' 服务实现之间的依赖
+UserServiceImpl --> NotificationService
+NoteServiceImpl --> NotificationService
+KnowledgeServiceImpl --> NotificationService
+AiServiceImpl --> NotificationService
+ImportServiceImpl --> NotificationService
+
+' 控制器与服务关系
+UserController --> UserService
+UserController --> FileService
+UserController --> TokenService
+UserController --> CodeService
+NoteController --> NoteService
+KnowledgeController --> KnowledgeService
+AiController --> AiService
+SearchController --> SearchHistoryService
+SearchController --> NoteService
+SearchController --> KnowledgeService
+ImportController --> ImportService
+ExportController --> ExportService
+NotificationController --> NotificationService
+
+' 控制器与工具类关系
+UserController --> JwtUtil
+NotificationController --> JwtUtil
+
+' DTO与实体关系
+NoteResponse ..> Note : <<fromEntity>>
+KnowledgeResponse ..> Knowledge : <<fromEntity>>
+SummaryResponse ..> AiSummary : <<fromEntity>>
+NotificationResponse ..> Notification : <<fromEntity>>
+
+@enduml

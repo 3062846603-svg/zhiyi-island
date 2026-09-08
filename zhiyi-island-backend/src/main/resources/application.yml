@@ -1,0 +1,97 @@
+# ====================================================================
+# 主配置文件（提交到仓库，仅包含占位符，不含真实凭据）
+# ====================================================================
+# 真实凭据通过以下任一方式提供：
+#   1. 本地开发：创建 application-local.yml（已 gitignore），详见
+#      application-local.yml.example；默认激活 local profile。
+#   2. 生产/CI 环境：通过环境变量注入（下方 ${ENV_VAR} 语法）。
+# ====================================================================
+
+spring:
+  # 默认激活 local profile；生产环境通过 SPRING_PROFILES_ACTIVE 覆盖
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  application:
+    name: zhiyi-island-backend
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/zhiyi_island}
+    username: ${DB_USERNAME:postgres}
+    # 数据库密码：通过本地配置或 DB_PASSWORD 环境变量提供
+    password: ${DB_PASSWORD:YOUR_DB_PASSWORD}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      pool-name: ZhiyiIslandHikariPool
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0
+      timeout: 5000
+  mail:
+    host: smtp.qq.com
+    port: 587
+    # 发件邮箱：通过本地配置或 MAIL_USERNAME 环境变量提供
+    username: ${MAIL_USERNAME:your-email@qq.com}
+    # 邮箱 SMTP 授权码：通过本地配置或 MAIL_PASSWORD 环境变量提供
+    password: ${MAIL_PASSWORD:YOUR_MAIL_AUTH_CODE}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  ai:
+    siliconflow:
+      base-url: https://api.siliconflow.cn/v1
+      # 大模型 API 密钥：通过本地配置或 SILICONFLOW_API_KEY 环境变量提供
+      api-key: ${SILICONFLOW_API_KEY:YOUR_API_KEY}
+      model: Pro/zai-org/GLM-5
+      knowledge-model: Pro/zai-org/GLM-5
+      embedding-model: BAAI/bge-m3
+      options:
+        temperature: 0.7
+        max-tokens: 4096
+  jmx:
+    enabled: false
+
+server:
+  port: 8080
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.zhiyiislandbackend.entity
+  type-handlers-package: com.example.zhiyiislandbackend.handler
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+# JWT 签名密钥：通过本地配置或 JWT_SECRET 环境变量提供（不少于 256 位）
+jwt:
+  secret: ${JWT_SECRET:YOUR_JWT_SECRET_KEY_MIN_256_BITS}
+  expiration: 86400000
+
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9005}
+  # MinIO 访问密钥：通过本地配置或 MINIO_ACCESS_KEY 环境变量提供
+  access-key: ${MINIO_ACCESS_KEY:YOUR_MINIO_ACCESS_KEY}
+  # MinIO 私有密钥：通过本地配置或 MINIO_SECRET_KEY 环境变量提供
+  secret-key: ${MINIO_SECRET_KEY:YOUR_MINIO_SECRET_KEY}
+  bucket-name: zhiyi-island
+
+app:
+  ai:
+    auto-extract-knowledge: true
+  test-data:
+    import-enabled: false

@@ -1,0 +1,160 @@
+@startuml 知忆岛系统用例图
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "用户" as User
+actor "游客" as Guest
+actor "AI服务" as AI
+
+rectangle "知忆岛系统" {
+    
+    package "用户管理" {
+        usecase "注册" as UC_Register
+        usecase "登录" as UC_Login
+        usecase "登出" as UC_Logout
+        usecase "修改密码" as UC_ChangePassword
+        usecase "重置密码" as UC_ResetPassword
+        usecase "更新个人信息" as UC_UpdateProfile
+        usecase "上传头像" as UC_UploadAvatar
+        usecase "删除账户" as UC_DeleteAccount
+        usecase "换绑邮箱" as UC_ChangeEmail
+    }
+    
+    package "笔记管理" {
+        usecase "创建笔记" as UC_CreateNote
+        usecase "编辑笔记" as UC_EditNote
+        usecase "删除笔记" as UC_DeleteNote
+        usecase "查看笔记列表" as UC_ViewNotes
+        usecase "查看笔记详情" as UC_ViewNoteDetail
+        usecase "搜索笔记" as UC_SearchNotes
+        usecase "标星笔记" as UC_StarNote
+        usecase "按分类筛选笔记" as UC_FilterNotes
+    }
+    
+    package "知识库管理" {
+        usecase "创建知识库" as UC_CreateKnowledge
+        usecase "编辑知识库" as UC_EditKnowledge
+        usecase "删除知识库" as UC_DeleteKnowledge
+        usecase "查看知识库列表" as UC_ViewKnowledgeList
+        usecase "查看知识库详情" as UC_ViewKnowledgeDetail
+        usecase "添加知识条目" as UC_AddKnowledgeItem
+        usecase "编辑知识条目" as UC_EditKnowledgeItem
+        usecase "删除知识条目" as UC_DeleteKnowledgeItem
+    }
+    
+    package "AI功能" {
+        usecase "生成AI摘要" as UC_GenerateSummary
+        usecase "查看摘要历史" as UC_ViewSummaryHistory
+        usecase "保存摘要到笔记" as UC_SaveSummaryToNote
+        usecase "提取关键词" as UC_ExtractKeywords
+        usecase "生成知识图谱" as UC_GenerateKnowledgeGraph
+    }
+    
+    package "搜索功能" {
+        usecase "普通搜索" as UC_NormalSearch
+        usecase "AI智能搜索" as UC_AISearch
+        usecase "查看搜索历史" as UC_ViewSearchHistory
+        usecase "清空搜索历史" as UC_ClearSearchHistory
+    }
+    
+    package "文件操作" {
+        usecase "导入文件" as UC_ImportFile
+        usecase "查看导入历史" as UC_ViewImportHistory
+        usecase "导出数据" as UC_ExportData
+        usecase "查看导出历史" as UC_ViewExportHistory
+    }
+    
+    package "通知功能" {
+        usecase "查看通知列表" as UC_ViewNotifications
+        usecase "标记通知已读" as UC_MarkNotificationRead
+        usecase "全部标记已读" as UC_MarkAllRead
+        usecase "删除通知" as UC_DeleteNotification
+    }
+    
+    package "个人设置" {
+        usecase "主题设置" as UC_ThemeSettings
+        usecase "通知设置" as UC_NotificationSettings
+        usecase "隐私设置" as UC_PrivacySettings
+        usecase "查看存储空间" as UC_ViewStorage
+    }
+    
+}
+
+' 游客用例
+Guest --> UC_Register
+Guest --> UC_Login
+Guest --> UC_ResetPassword
+
+' 用户管理用例
+User --> UC_Logout
+User --> UC_ChangePassword
+User --> UC_UpdateProfile
+User --> UC_UploadAvatar
+User --> UC_DeleteAccount
+User --> UC_ChangeEmail
+
+' 笔记管理用例
+User --> UC_CreateNote
+User --> UC_EditNote
+User --> UC_DeleteNote
+User --> UC_ViewNotes
+User --> UC_ViewNoteDetail
+User --> UC_SearchNotes
+User --> UC_StarNote
+User --> UC_FilterNotes
+
+' 知识库管理用例
+User --> UC_CreateKnowledge
+User --> UC_EditKnowledge
+User --> UC_DeleteKnowledge
+User --> UC_ViewKnowledgeList
+User --> UC_ViewKnowledgeDetail
+User --> UC_AddKnowledgeItem
+User --> UC_EditKnowledgeItem
+User --> UC_DeleteKnowledgeItem
+
+' AI功能用例
+User --> UC_GenerateSummary
+User --> UC_ViewSummaryHistory
+User --> UC_SaveSummaryToNote
+User --> UC_ExtractKeywords
+User --> UC_GenerateKnowledgeGraph
+
+' AI服务参与
+AI --> UC_GenerateSummary : <<provide>>
+AI --> UC_ExtractKeywords : <<provide>>
+AI --> UC_GenerateKnowledgeGraph : <<provide>
+AI --> UC_AISearch : <<provide>>
+
+' 搜索功能用例
+User --> UC_NormalSearch
+User --> UC_AISearch
+User --> UC_ViewSearchHistory
+User --> UC_ClearSearchHistory
+
+' 文件操作用例
+User --> UC_ImportFile
+User --> UC_ViewImportHistory
+User --> UC_ExportData
+User --> UC_ViewExportHistory
+
+' 通知功能用例
+User --> UC_ViewNotifications
+User --> UC_MarkNotificationRead
+User --> UC_MarkAllRead
+User --> UC_DeleteNotification
+
+' 个人设置用例
+User --> UC_ThemeSettings
+User --> UC_NotificationSettings
+User --> UC_PrivacySettings
+User --> UC_ViewStorage
+
+' 包含关系
+UC_CreateNote ..> UC_UploadAvatar : <<include>>
+UC_GenerateSummary ..> UC_SaveSummaryToNote : <<extend>>
+UC_ImportFile ..> UC_CreateNote : <<include>>
+
+@enduml

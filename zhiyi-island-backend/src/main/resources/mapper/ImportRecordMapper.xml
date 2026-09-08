@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.zhiyiislandbackend.mapper.ImportRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.zhiyiislandbackend.model.entity.ImportRecord">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="file_name" property="fileName"/>
+        <result column="file_type" property="fileType"/>
+        <result column="file_size" property="fileSize"/>
+        <result column="status" property="status"
+                typeHandler="com.example.zhiyiislandbackend.handler.ImportStatusTypeHandler"/>
+        <result column="note_count" property="noteCount"/>
+        <result column="knowledge_count" property="knowledgeCount"/>
+        <result column="error_message" property="errorMessage"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.example.zhiyiislandbackend.model.entity.ImportRecord" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO import_record (user_id, file_name, file_type, file_size, status, note_count, knowledge_count,
+        error_message, create_time)
+        VALUES (#{userId}, #{fileName}, #{fileType}, #{fileSize}, #{status}, #{noteCount}, #{knowledgeCount},
+        #{errorMessage}, #{createTime})
+    </insert>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM import_record WHERE id = #{id}
+    </select>
+
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT * FROM import_record WHERE user_id = #{userId} ORDER BY create_time DESC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE import_record
+        SET status = #{status}, note_count = #{noteCount}, knowledge_count = #{knowledgeCount}, error_message =
+        #{errorMessage}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM import_record WHERE id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>知忆岛数据导出</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm 15mm;
+        }
+
+        body {
+            font-family: SimHei, SimSun, 'Microsoft YaHei', sans-serif;
+            font-size: 12px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .cover-page {
+            page-break-after: always;
+            text-align: center;
+            padding-top: 200px;
+        }
+
+        .cover-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #122E8A;
+            margin-bottom: 20px;
+        }
+
+        .cover-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .cover-time {
+            font-size: 14px;
+            color: #999;
+            margin-top: 80px;
+        }
+
+        .section {
+            page-break-before: always;
+            padding-top: 10px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #122E8A;
+            border-bottom: 3px solid #122E8A;
+            padding-bottom: 8px;
+            margin-bottom: 25px;
+        }
+
+        .item-card {
+            margin-bottom: 30px;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
+            background: #fff;
+        }
+
+        .item-header {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item-title-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+
+        .item-meta-row {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .item-meta-item {
+            margin-right: 20px;
+        }
+
+        .item-body {
+            font-size: 12px;
+            color: #444;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .knowledge-section {
+            margin-top: 15px;
+            padding-left: 20px;
+            border-left: 3px solid #122E8A;
+        }
+
+        .knowledge-section-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 12px;
+        }
+
+        .sub-item {
+            margin-bottom: 12px;
+            padding: 10px 15px;
+            background: #f9f9f9;
+            border: 1px solid #eee;
+        }
+
+        .sub-item-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .sub-item-content {
+            font-size: 11px;
+            color: #555;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cover-page">
+        <div class="cover-title">知忆岛数据导出</div>
+        <div class="cover-subtitle">Zhiyi Island Data Export</div>
+        <div class="cover-time" th:text="${exportTime}">导出时间</div>
+    </div>
+
+    <th:block th:if="${notes != null and !notes.empty}">
+        <div class="section">
+            <div class="section-title">笔 记</div>
+
+            <div class="item-card" th:each="note : ${notes}">
+                <div class="item-header">
+                    <div class="item-title-text" th:text="${note.title} ?: '(无标题)'">笔记标题</div>
+                    <div class="item-meta-row">
+                        <span class="item-meta-item" th:if="${note.category}">分类：<span
+                                th:text="${note.category}">默认</span></span>
+                        <span class="item-meta-item" th:if="${note.status}">状态：<span
+                                th:text="${note.status}">已发布</span></span>
+                        <span class="item-meta-item" th:if="${note.wordCount != null}"><span
+                                th:text="${note.wordCount}">0</span> 字</span>
+                        <span class="item-meta-item" th:if="${note.source}">来源：<span
+                                th:text="${note.source}">手动创建</span></span>
+                    </div>
+                </div>
+                <div class="item-body" th:text="${note.content} ?: '(无内容)'">笔记内容</div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:if="${knowledgeList != null and !knowledgeList.empty}">
+        <div class="section">
+            <div class="section-title">知 识 库</div>
+
+            <div class="item-card" th:each="kw : ${knowledgeList}">
+                <div class="item-header">
+                    <div class="item-title-text" th:text="${kw.knowledge.title} ?: '(无标题)'">知识库标题</div>
+                    <div class="item-meta-row">
+                        <span class="item-meta-item" th:if="${kw.knowledge.category}">分类：<span
+                                th:text="${kw.knowledge.category}">默认</span></span>
+                        <span class="item-meta-item" th:if="${kw.knowledge.itemCount != null}"><span
+                                th:text="${kw.knowledge.itemCount}">0</span> 个条目</span>
+                        <span class="item-meta-item" th:if="${kw.knowledge.noteCount != null}"><span
+                                th:text="${kw.knowledge.noteCount}">0</span> 篇关联笔记</span>
+                    </div>
+                </div>
+
+                <div class="item-body" th:if="${kw.knowledge.description}" th:text="${kw.knowledge.description}">知识库描述
+                </div>
+
+                <div class="knowledge-section" th:if="${kw.items != null and !kw.items.empty}">
+                    <div class="knowledge-section-title">知识条目列表</div>
+
+                    <div class="sub-item" th:each="item : ${kw.items}">
+                        <div class="sub-item-title" th:text="${item.title} ?: '(无标题)'">条目标题</div>
+                        <div class="sub-item-content" th:if="${item.content}" th:text="${item.content}">条目内容</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:if="${aiSummaries != null and !aiSummaries.empty}">
+        <div class="section">
+            <div class="section-title">AI 摘 要</div>
+
+            <div class="item-card" th:each="summary, iter : ${aiSummaries}">
+                <div class="item-header">
+                    <div class="item-title-text">AI 摘要 <span th:text="'#' + ${iter.count}">#1</span></div>
+                    <div class="item-meta-row">
+                        <span class="item-meta-item" th:if="${summary.summaryStyle}">风格：<span
+                                th:text="${summary.summaryStyle}">标准</span></span>
+                        <span class="item-meta-item" th:if="${summary.summaryLength}">长度：<span
+                                th:text="${summary.summaryLength}">中等</span></span>
+                        <span class="item-meta-item" th:if="${summary.originalWordCount != null}">原文 <span
+                                th:text="${summary.originalWordCount}">0</span> 字</span>
+                        <span class="item-meta-item" th:if="${summary.summaryWordCount != null}">摘要 <span
+                                th:text="${summary.summaryWordCount}">0</span> 字</span>
+                    </div>
+                </div>
+                <div class="item-body" th:text="${summary.summaryContent} ?: '(无摘要内容)'">摘要内容</div>
+            </div>
+        </div>
+    </th:block>
+</body>
+
+</html>

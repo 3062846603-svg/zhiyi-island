@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知忆岛系统用例图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+
+        .diagram-container {
+            border: 2px solid #000;
+            padding: 20px;
+            background: #fff;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #000;
+            font-size: 0.85em;
+        }
+
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .legend-item {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>知忆岛系统用例图</h1>
+
+        <div class="diagram-container">
+            <pre class="mermaid">
+flowchart LR
+    User((用户))
+    
+    subgraph 知忆岛系统
+        direction TB
+        A1(注册/登录)
+        A2(管理个人信息)
+        
+        B1(创建/编辑笔记)
+        B2(删除笔记)
+        B3(创建知识库)
+        B4(管理知识条目)
+        
+        C1(AI摘要生成)
+        C2(AI智能对话)
+        C3(知识图谱生成)
+        
+        D1(搜索笔记/知识)
+        D2(上传/下载文件)
+        D3(接收通知)
+        
+        E1(导出数据)
+        E2(导入数据)
+    end
+    
+    User --> A1
+    User --> A2
+    User --> B1
+    User --> B2
+    User --> B3
+    User --> B4
+    User --> C1
+    User --> C2
+    User --> C3
+    User --> D1
+    User --> D2
+    User --> D3
+    User --> E1
+    User --> E2
+            </pre>
+        </div>
+
+        <div class="legend">
+            <div class="legend-title">用例说明</div>
+            <div class="legend-item">用户管理: 注册/登录、管理个人信息</div>
+            <div class="legend-item">笔记管理: 创建、编辑、删除笔记</div>
+            <div class="legend-item">知识库管理: 创建知识库、管理知识条目</div>
+            <div class="legend-item">AI服务: 摘要生成、智能对话、知识图谱</div>
+            <div class="legend-item">辅助功能: 搜索、文件管理、通知、数据导入导出</div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+                rankSpacing: 50,
+                nodeSpacing: 30
+            }
+        });
+    </script>
+</body>
+
+</html>

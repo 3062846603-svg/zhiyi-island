@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.zhiyiislandbackend.mapper.KnowledgeItemMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.zhiyiislandbackend.model.entity.KnowledgeItem">
+        <id column="id" property="id"/>
+        <result column="knowledge_id" property="knowledgeId"/>
+        <result column="note_id" property="noteId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="source" property="source"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, knowledge_id, note_id, title, content, source, create_time, update_time
+    </sql>
+
+    <insert id="insert" parameterType="com.example.zhiyiislandbackend.model.entity.KnowledgeItem"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO knowledge_item (knowledge_id, note_id, title, content, source, create_time, update_time)
+        VALUES (#{knowledgeId}, #{noteId}, #{title}, #{content}, #{source}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="updateById" parameterType="com.example.zhiyiislandbackend.model.entity.KnowledgeItem">
+        UPDATE knowledge_item
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="source != null">source = #{source},</if>
+            update_time = #{updateTime}
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM knowledge_item WHERE id = #{id}
+    </delete>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM knowledge_item
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByKnowledgeId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM knowledge_item
+        WHERE knowledge_id = #{knowledgeId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByNoteId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM knowledge_item
+        WHERE note_id = #{noteId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="countByKnowledgeId" resultType="int">
+        SELECT COUNT(*) FROM knowledge_item WHERE knowledge_id = #{knowledgeId}
+    </select>
+
+    <select id="countByNoteId" resultType="int">
+        SELECT COUNT(*) FROM knowledge_item WHERE note_id = #{noteId}
+    </select>
+
+    <select id="countByUserId" resultType="int">
+        SELECT COUNT(*) FROM knowledge_item ki
+        INNER JOIN knowledge k ON ki.knowledge_id = k.id
+        WHERE k.user_id = #{userId}
+    </select>
+
+</mapper>

@@ -1,0 +1,115 @@
+# ==================== 后端 (Java/Spring Boot) ====================
+
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ==================== 前端 (Vue/Node) ====================
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+.DS_Store
+dist
+dist-ssr
+coverage
+*.local
+
+*.tsbuildinfo
+
+.eslintcache
+
+# Cypress
+/cypress/videos/
+/cypress/screenshots/
+
+# Vitest
+__screenshots__/
+
+# Vite
+*.timestamp-*-*.mjs
+
+# ==================== 通用 ====================
+
+### VS Code ###
+.vscode/*
+!.vscode/extensions.json
+
+### 操作系统 ###
+.DS_Store
+Thumbs.db
+
+### 环境配置 ###
+.env
+.env.local
+.env.*.local
+
+# 本地开发配置（含真实凭据，禁止提交；application-local.yml.example 为模板可提交）
+zhiyi-island-backend/src/main/resources/application-local.yml
+
+ai-log
+
+# 本地运行数据、下载工具及开发凭据
+.local/
+
+# GitHub upload: private files and backups
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.dump
+*.rdb
+*.aof
+*.tar.gz
+zhiyi-island-backend/src/main/resources/application-prod.yml
+
+# Personal deployment files remain local
+/start-local.ps1
+/stop-local.ps1
+/start-server-preview.ps1
+/stop-server-preview.ps1
+/build-server-release.ps1
+/本地启动说明.md
+/运行与修改操作指南.md
+/邮件与DeepSeek配置说明.md
+/服务器部署说明.md
+/3-知忆岛系统设计报告.docx
+/3-知忆岛选题报告.docx
+/3-知忆岛需求报告.docx
+/4-知忆岛开发技术报告.docx
+/知忆智能读书笔记与知识库系统使用说明.docx

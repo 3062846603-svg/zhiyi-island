@@ -1,0 +1,8 @@
+[Unit]
+Description=Back up Zhiyi database, files and configuration
+After=postgresql-16.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/zhiyi-backup
+Nice=10
+IOSchedulingClass=idle

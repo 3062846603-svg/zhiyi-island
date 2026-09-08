@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.zhiyiislandbackend.mapper.NoteMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.zhiyiislandbackend.model.entity.Note">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="knowledge_id" property="knowledgeId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="category" property="category"
+                typeHandler="com.example.zhiyiislandbackend.handler.NoteCategoryTypeHandler"/>
+        <result column="status" property="status"
+                typeHandler="com.example.zhiyiislandbackend.handler.NoteStatusTypeHandler"/>
+        <result column="word_count" property="wordCount"/>
+        <result column="source" property="source"/>
+        <result column="embedding" property="embedding"
+                typeHandler="com.example.zhiyiislandbackend.handler.VectorTypeHandler"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_id, knowledge_id, title, content, category, status,
+        word_count, source, embedding,
+        create_time, update_time
+    </sql>
+
+    <insert id="insert" parameterType="com.example.zhiyiislandbackend.model.entity.Note" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO note (user_id, knowledge_id, title, content, category, status,
+        word_count, source, create_time, update_time)
+        VALUES (#{userId}, #{knowledgeId}, #{title}, #{content}, #{category}, #{status},
+        #{wordCount}, #{source}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="updateById" parameterType="com.example.zhiyiislandbackend.model.entity.Note">
+        UPDATE note
+        <set>
+            <if test="knowledgeId != null">knowledge_id = #{knowledgeId},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="category != null">category = #{category},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="wordCount != null">word_count = #{wordCount},</if>
+            <if test="source != null">source = #{source},</if>
+            update_time = #{updateTime}
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM note WHERE id = #{id}
+    </delete>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM note
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM note
+        WHERE user_id = #{userId} AND status != 3
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByUserIdAndCategory" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM note
+        WHERE user_id = #{userId} AND category = #{category} AND status != 3
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByKnowledgeId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM note
+        WHERE knowledge_id = #{knowledgeId} AND status != 3
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="searchByKeyword" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM note
+        WHERE user_id = #{userId} AND status != 3
+        AND (title LIKE CONCAT('%', #{keyword}, '%') OR content LIKE CONCAT('%', #{keyword}, '%'))
+        ORDER BY create_time DESC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE note SET status = #{status}, update_time = CURRENT_TIMESTAMP WHERE id = #{id}
+    </update>
+
+    <update id="updateKnowledgeId">
+        UPDATE note SET knowledge_id = #{knowledgeId}, update_time = CURRENT_TIMESTAMP WHERE id = #{id}
+    </update>
+
+    <select id="countByUserId" resultType="int">
+        SELECT COUNT(*) FROM note WHERE user_id = #{userId} AND status != 3
+    </select>
+
+    <select id="countByKnowledgeId" resultType="int">
+        SELECT COUNT(*) FROM note WHERE knowledge_id = #{knowledgeId} AND status != 3
+    </select>
+
+    <select id="countDraftsByUserId" resultType="int">
+        SELECT COUNT(*) FROM note WHERE user_id = #{userId} AND status = 0
+    </select>
+
+    <select id="selectDraftsByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM note
+        WHERE user_id = #{userId} AND status = 0
+        ORDER BY update_time DESC
+    </select>
+
+    <update id="updateEmbedding">
+        UPDATE note SET embedding = #{embedding, typeHandler=com.example.zhiyiislandbackend.handler.VectorTypeHandler}
+        WHERE id = #{id}
+    </update>
+
+    <select id="searchByVector" resultMap="BaseResultMap">
+        SELECT<include refid="Base_Column_List"/>,
+        1 - (embedding &lt;=&gt;
+        #{embedding, typeHandler=com.example.zhiyiislandbackend.handler.VectorTypeHandler}::vector) as similarity
+        FROM note
+        WHERE user_id = #{userId} AND status != 3 AND embedding IS NOT NULL
+        ORDER BY embedding &lt;=&gt;
+        #{embedding, typeHandler=com.example.zhiyiislandbackend.handler.VectorTypeHandler}::vector
+        LIMIT #{limit}
+    </select>
+
+    <select id="searchByVectorWithThreshold" resultMap="BaseResultMap">
+        SELECT<include refid="Base_Column_List"/>,
+        1 - (embedding &lt;=&gt;
+        #{embedding, typeHandler=com.example.zhiyiislandbackend.handler.VectorTypeHandler}::vector) as similarity
+        FROM note
+        WHERE user_id = #{userId} AND status != 3 AND embedding IS NOT NULL
+        AND 1 - (embedding &lt;=&gt;
+        #{embedding, typeHandler=com.example.zhiyiislandbackend.handler.VectorTypeHandler}::vector) >= #{threshold}
+        ORDER BY embedding &lt;=&gt;
+        #{embedding, typeHandler=com.example.zhiyiislandbackend.handler.VectorTypeHandler}::vector
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectNotesWithoutEmbedding" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM note
+        WHERE user_id = #{userId} AND status != 3 AND embedding IS NULL
+        ORDER BY create_time DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>

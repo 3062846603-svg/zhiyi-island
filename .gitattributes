@@ -1,0 +1,8 @@
+/mvnw text eol=lf
+*.cmd text eol=crlf
+
+# Keep Linux deployment files compatible when checked out on Windows.
+*.sh text eol=lf
+deploy/ecs/*.service text eol=lf
+deploy/ecs/*.timer text eol=lf
+deploy/ecs/*.conf text eol=lf

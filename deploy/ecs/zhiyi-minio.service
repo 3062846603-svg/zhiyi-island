@@ -1,0 +1,24 @@
+[Unit]
+Description=Zhiyi Island MinIO
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+User=zhiyi-minio
+Group=zhiyi-minio
+EnvironmentFile=/etc/zhiyi-island/minio.env
+Environment=GOMEMLIMIT=128MiB
+Environment=GOGC=50
+ExecStart=/usr/local/bin/minio server --address 127.0.0.1:9005 --console-address 127.0.0.1:9006 /var/lib/zhiyi-minio
+Restart=on-failure
+RestartSec=10
+MemoryHigh=256M
+MemoryMax=320M
+LimitNOFILE=65536
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/zhiyi-minio
+[Install]
+WantedBy=multi-user.target

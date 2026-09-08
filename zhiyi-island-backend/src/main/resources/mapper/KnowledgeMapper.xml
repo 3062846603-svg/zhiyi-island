@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.zhiyiislandbackend.mapper.KnowledgeMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.zhiyiislandbackend.model.entity.Knowledge">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="category" property="category"
+                typeHandler="com.example.zhiyiislandbackend.handler.KnowledgeCategoryTypeHandler"/>
+        <result column="item_count" property="itemCount"/>
+        <result column="note_count" property="noteCount"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_id, title, description, category, item_count, note_count, create_time, update_time
+    </sql>
+
+    <insert id="insert" parameterType="com.example.zhiyiislandbackend.model.entity.Knowledge" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO knowledge (user_id, title, description, category, item_count, note_count,
+        create_time, update_time)
+        VALUES (#{userId}, #{title}, #{description},
+        #{category, typeHandler=com.example.zhiyiislandbackend.handler.KnowledgeCategoryTypeHandler},
+        #{itemCount}, #{noteCount}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="updateById" parameterType="com.example.zhiyiislandbackend.model.entity.Knowledge">
+        UPDATE knowledge
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="category != null">category =
+                #{category, typeHandler=com.example.zhiyiislandbackend.handler.KnowledgeCategoryTypeHandler},
+            </if>
+            update_time = #{updateTime}
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM knowledge WHERE id = #{id}
+    </delete>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM knowledge
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM knowledge
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByUserIdAndCategory" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM knowledge
+        WHERE user_id = #{userId} AND category = #{category}
+        ORDER BY create_time DESC
+    </select>
+
+    <update id="updateItemCount">
+        UPDATE knowledge SET item_count = #{itemCount}, update_time = CURRENT_TIMESTAMP WHERE id = #{id}
+    </update>
+
+    <update id="updateNoteCount">
+        UPDATE knowledge SET note_count = #{noteCount}, update_time = CURRENT_TIMESTAMP WHERE id = #{id}
+    </update>
+
+    <select id="countByUserId" resultType="int">
+        SELECT COUNT(*) FROM knowledge WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM knowledge
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+    <linearGradient id="islandGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#f3f4f6"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景圆形 -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGradient)"/>
+  
+  <!-- 岛屿底部 -->
+  <ellipse cx="256" cy="380" rx="140" ry="40" fill="url(#islandGradient)" opacity="0.9"/>
+  
+  <!-- 书本主体 -->
+  <g transform="translate(256, 240)">
+    <!-- 左页 -->
+    <path d="M-80 -60 L-80 80 Q-40 100 0 80 L0 -60 Q-40 -80 -80 -60 Z" 
+          fill="url(#bookGradient)" stroke="#e5e7eb" stroke-width="2"/>
+    <!-- 右页 -->
+    <path d="M80 -60 L80 80 Q40 100 0 80 L0 -60 Q40 -80 80 -60 Z" 
+          fill="url(#bookGradient)" stroke="#e5e7eb" stroke-width="2"/>
+    <!-- 书脊 -->
+    <path d="M0 -60 L0 80" stroke="#d1d5db" stroke-width="3"/>
+    <!-- 左页文字线条 -->
+    <line x1="-65" y1="-30" x2="-15" y2="-30" stroke="#9ca3af" stroke-width="3" stroke-linecap="round"/>
+    <line x1="-65" y1="-10" x2="-15" y2="-10" stroke="#9ca3af" stroke-width="3" stroke-linecap="round"/>
+    <line x1="-65" y1="10" x2="-15" y2="10" stroke="#9ca3af" stroke-width="3" stroke-linecap="round"/>
+    <line x1="-65" y1="30" x2="-35" y2="30" stroke="#9ca3af" stroke-width="3" stroke-linecap="round"/>
+    <!-- 右页文字线条 -->
+    <line x1="15" y1="-30" x2="65" y2="-30" stroke="#9ca3af" stroke-width="3" stroke-linecap="round"/>
+    <line x1="15" y1="-10" x2="65" y2="-10" stroke="#9ca3af" stroke-width="3" stroke-linecap="round"/>
+    <line x1="15" y1="10" x2="65" y2="10" stroke="#9ca3af" stroke-width="3" stroke-linecap="round"/>
+    <line x1="15" y1="30" x2="45" y2="30" stroke="#9ca3af" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  
+  <!-- AI 星光效果 -->
+  <g fill="#fbbf24">
+    <!-- 顶部星光 -->
+    <polygon points="256,80 262,100 282,100 266,112 272,132 256,120 240,132 246,112 230,100 250,100" opacity="0.9"/>
+    <!-- 左侧小星 -->
+    <polygon points="160,140 164,152 176,152 166,160 170,172 160,164 150,172 154,160 144,152 156,152" opacity="0.7"/>
+    <!-- 右侧小星 -->
+    <polygon points="352,140 356,152 368,152 358,160 362,172 352,164 342,172 346,160 336,152 348,152" opacity="0.7"/>
+  </g>
+  
+  <!-- AI 连接点 -->
+  <g fill="#ffffff" opacity="0.8">
+    <circle cx="200" cy="180" r="6"/>
+    <circle cx="312" cy="180" r="6"/>
+    <circle cx="256" cy="150" r="8"/>
+    <!-- 连接线 -->
+    <line x1="200" y1="180" x2="256" y2="150" stroke="#ffffff" stroke-width="2" opacity="0.5"/>
+    <line x1="312" y1="180" x2="256" y2="150" stroke="#ffffff" stroke-width="2" opacity="0.5"/>
+    <line x1="200" y1="180" x2="312" y2="180" stroke="#ffffff" stroke-width="2" opacity="0.5"/>
+  </g>
+  
+  <!-- 海浪装饰 -->
+  <g fill="#ffffff" opacity="0.3">
+    <path d="M80 420 Q120 400 160 420 Q200 440 240 420 Q280 400 320 420 Q360 440 400 420 Q440 400 480 420"/>
+    <path d="M60 440 Q100 420 140 440 Q180 460 220 440 Q260 420 300 440 Q340 460 380 440 Q420 420 460 440"/>
+  </g>
+</svg>

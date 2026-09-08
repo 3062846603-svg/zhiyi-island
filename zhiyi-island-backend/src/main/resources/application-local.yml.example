@@ -1,0 +1,30 @@
+# ====================================================================
+# 本地开发环境配置模板
+# ====================================================================
+# 使用方式：复制本文件为 application-local.yml（去掉 .example 后缀），
+#          然后将下方占位符替换为真实的本地凭据。
+# 注意：application-local.yml 已被 .gitignore 排除，不会提交到仓库。
+# ====================================================================
+
+spring:
+  datasource:
+    # 本地 PostgreSQL 数据库密码
+    password: <your-db-password>
+  mail:
+    # 发件邮箱地址
+    username: <your-email@qq.com>
+    # 邮箱 SMTP 授权码（非登录密码，在邮箱设置中生成）
+    password: <your-mail-auth-code>
+  ai:
+    siliconflow:
+      # SiliconFlow 大模型平台 API 密钥
+      api-key: <your-siliconflow-api-key>
+
+# JWT 签名密钥（长度需满足 HS256 要求，不少于 256 位）
+jwt:
+  secret: <your-jwt-secret-key-at-least-256-bits>
+
+# MinIO 对象存储凭据（本地默认为 minioadmin，生产环境务必更换）
+minio:
+  access-key: <your-minio-access-key>
+  secret-key: <your-minio-secret-key>
